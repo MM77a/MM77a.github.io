@@ -1,0 +1,106 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: #222;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5;
+}
+
+main {
+    width: min(960px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 64px 0 96px;
+}
+
+h1 {
+    margin: 0 0 8px;
+    font-size: 2.25rem;
+}
+
+h2 {
+    margin: 0;
+    color: #555;
+    font-size: 1.35rem;
+    font-weight: normal;
+}
+
+h3 {
+    margin: 0 0 24px;
+    font-size: 1.35rem;
+}
+
+header {
+    margin: 40px 0 72px;
+}
+
+section {
+    margin-top: 72px;
+}
+
+a {
+    color: #222;
+}
+
+.back-link {
+    font-size: 0.95rem;
+}
+
+.project-list {
+    margin-top: 40px;
+    padding-left: 20px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+figure {
+    margin: 0;
+}
+
+figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.single-image {
+    width: calc(50% - 12px);
+    margin-top: 32px;
+}
+
+figcaption {
+    margin-top: 8px;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 640px) {
+    main {
+        width: min(100% - 28px, 960px);
+        padding-top: 36px;
+    }
+
+    h1 {
+        font-size: 1.9rem;
+    }
+
+    header,
+    section {
+        margin-top: 48px;
+    }
+
+    .image-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .single-image {
+        width: 100%;
+    }
+}
