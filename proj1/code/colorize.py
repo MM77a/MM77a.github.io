@@ -168,4 +168,11 @@ def process_image(filename, use_edges=False):
     print(f"  R offset (x, y): {r_offset}")
 
 if __name__ == "__main__":
-    process_image("emir.tif", use_edges=True)
+    custom_files = [
+        "sorochei_dam.tif",
+        "v_malorossii.tif",
+        "makhrovye_maki.tif",
+    ]
+
+    for filename in custom_files:
+        process_image(filename)

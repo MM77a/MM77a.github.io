@@ -1,0 +1,9 @@
+sorochei_dam.tif
+  G offset (x, y): (-1, 33)
+  R offset (x, y): (-4, 115)
+v_malorossii.tif
+  G offset (x, y): (3, 26)
+  R offset (x, y): (4, 120)
+makhrovye_maki.tif
+  G offset (x, y): (8, 9)
+  R offset (x, y): (14, 61)
