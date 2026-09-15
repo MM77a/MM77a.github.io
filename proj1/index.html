@@ -68,6 +68,22 @@
             Offsets below are listed as <strong>(x, y)</strong>. Positive x
             moves right and positive y moves down.
         </p>
+
+        <p>
+            For a candidate displacement (dx, dy), I computed
+            the mean squared difference between the shifted source channel
+            and the reference channel:
+            MSE = (1/N) Σ(I<sub>shifted</sub> − I<sub>reference</sub>)².
+            Because every candidate uses the same number of pixels, minimizing
+            this score gives the same displacement as minimizing the L2 norm.
+        </p>
+
+        <p>
+            I used one fixed parameter set for every image: a 20% scoring crop,
+            a ±15-pixel search at the coarsest level, and a ±3-pixel refinement
+            at each finer level. I did not tune parameters separately for
+            individual images.
+        </p>
     </section>
 
     <section>
@@ -105,7 +121,13 @@
 
     <section>
         <h3>Multi-Scale Pyramid Alignment</h3>
-
+        
+        <p>
+            Raw-pixel L2 aligned 16 of the 17 images correctly. Emir was the 
+            only failure under the basic metric, which I corrected using Sobel
+            edge features in the following section.
+        </p>
+        
         <div class="result-grid">
             <figure>
                 <img src="./output/cathedral_pyramid.jpg" alt="Cathedral">
