@@ -109,16 +109,13 @@ def edge_features(image):
 
     return cv.magnitude(grad_x, grad_y)
 
-def process_image(filename, use_edges=False):
+def process_image(filename, mode="pyramid"):
     image_path = DATA_DIR / filename
-
-    # IMREAD_UNCHANGED preserves 16-bit TIFF data for later
     im = cv.imread(str(image_path), cv.IMREAD_UNCHANGED)
 
     if im is None:
         raise FileNotFoundError(f"Could not read {image_path}")
 
-    # Convert integer image to float in [0, 1]
     max_value = np.iinfo(im.dtype).max
     im = im.astype(np.float32) / max_value
 
@@ -128,7 +125,15 @@ def process_image(filename, use_edges=False):
     g = im[height:2 * height, :]
     r = im[2 * height:3 * height, :]
 
-    if use_edges:
+    if mode == "single_scale":
+        ag, g_offset = align(g, b)
+        ar, r_offset = align(r, b)
+
+    elif mode == "pyramid":
+        ag, g_offset = pyramid_align(g, b)
+        ar, r_offset = pyramid_align(r, b)
+
+    elif mode == "edges":
         b_features = edge_features(b)
         g_features = edge_features(g)
         r_features = edge_features(r)
@@ -136,7 +141,6 @@ def process_image(filename, use_edges=False):
         _, g_offset = pyramid_align(g_features, b_features)
         _, r_offset = pyramid_align(r_features, b_features)
 
-        # Apply feature-computed offsets to the original channels
         ag = np.roll(
             g,
             shift=(g_offset[1], g_offset[0]),
@@ -148,31 +152,66 @@ def process_image(filename, use_edges=False):
             axis=(0, 1)
         )
 
-        suffix = "edges"
-        
     else:
-        ag, g_offset = pyramid_align(g, b)
-        ar, r_offset = pyramid_align(r, b)
-        suffix = "pyramid"
+        raise ValueError(
+            "Mode must be 'single_scale', 'pyramid', or 'edges'"
+        )
 
     im_out = np.dstack([ar, ag, b])
 
     out_uint8 = np.clip(im_out * 255, 0, 255).astype(np.uint8)
     out_bgr = cv.cvtColor(out_uint8, cv.COLOR_RGB2BGR)
 
-    output_path = OUTPUT_DIR / f"{Path(filename).stem}_{suffix}.jpg"
-    cv.imwrite(str(output_path), out_bgr)
+    output_path = OUTPUT_DIR / f"{Path(filename).stem}_{mode}.jpg"
 
-    print(f"{filename}")
+    if not cv.imwrite(str(output_path), out_bgr):
+        raise IOError(f"Could not save {output_path}")
+
+    print(f"{filename} [{mode}]")
     print(f"  G offset (x, y): {g_offset}")
     print(f"  R offset (x, y): {r_offset}")
 
-if __name__ == "__main__":
-    custom_files = [
-        "sorochei_dam.tif",
-        "v_malorossii.tif",
-        "makhrovye_maki.tif",
-    ]
+    return g_offset, r_offset
 
-    for filename in custom_files:
-        process_image(filename)
+
+LOW_RES_FILES = [
+    "cathedral.jpg",
+    "monastery.jpg",
+    "tobolsk.jpg",
+]
+
+OFFICIAL_FILES = [
+    "cathedral.jpg",
+    "monastery.jpg",
+    "tobolsk.jpg",
+    "church.tif",
+    "emir.tif",
+    "harvesters.tif",
+    "icon.tif",
+    "ilemselga.tif",
+    "melons.tif",
+    "religous_painting.tif",
+    "self_portrait.tif",
+    "siren.tif",
+    "three_generations.tif",
+    "wharf.tif",
+]
+
+CUSTOM_FILES = [
+    "sorochei_dam.tif",
+    "v_malorossii.tif",
+    "makhrovye_maki.tif",
+]
+
+
+if __name__ == "__main__":
+    # Required single-scale results
+    for filename in LOW_RES_FILES:
+        process_image(filename, mode="single_scale")
+
+    # Required raw-pixel pyramid results
+    for filename in OFFICIAL_FILES + CUSTOM_FILES:
+        process_image(filename, mode="pyramid")
+
+    # Better-feature result for Emir
+    process_image("emir.tif", mode="edges")

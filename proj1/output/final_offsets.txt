@@ -1,0 +1,63 @@
+cathedral.jpg [single_scale]
+  G offset (x, y): (2, 5)
+  R offset (x, y): (3, 12)
+monastery.jpg [single_scale]
+  G offset (x, y): (2, -3)
+  R offset (x, y): (2, 3)
+tobolsk.jpg [single_scale]
+  G offset (x, y): (3, 3)
+  R offset (x, y): (3, 7)
+cathedral.jpg [pyramid]
+  G offset (x, y): (2, 5)
+  R offset (x, y): (3, 12)
+monastery.jpg [pyramid]
+  G offset (x, y): (2, -3)
+  R offset (x, y): (2, 3)
+tobolsk.jpg [pyramid]
+  G offset (x, y): (3, 3)
+  R offset (x, y): (3, 7)
+church.tif [pyramid]
+  G offset (x, y): (4, 25)
+  R offset (x, y): (-4, 58)
+emir.tif [pyramid]
+  G offset (x, y): (24, 49)
+  R offset (x, y): (43, 61)
+harvesters.tif [pyramid]
+  G offset (x, y): (17, 59)
+  R offset (x, y): (14, 123)
+icon.tif [pyramid]
+  G offset (x, y): (17, 41)
+  R offset (x, y): (23, 89)
+ilemselga.tif [pyramid]
+  G offset (x, y): (7, 40)
+  R offset (x, y): (11, 131)
+melons.tif [pyramid]
+  G offset (x, y): (10, 81)
+  R offset (x, y): (14, 178)
+religous_painting.tif [pyramid]
+  G offset (x, y): (3, 29)
+  R offset (x, y): (7, 69)
+self_portrait.tif [pyramid]
+  G offset (x, y): (29, 78)
+  R offset (x, y): (37, 176)
+siren.tif [pyramid]
+  G offset (x, y): (-5, 50)
+  R offset (x, y): (-24, 97)
+three_generations.tif [pyramid]
+  G offset (x, y): (14, 52)
+  R offset (x, y): (12, 111)
+wharf.tif [pyramid]
+  G offset (x, y): (-7, 15)
+  R offset (x, y): (-16, 82)
+sorochei_dam.tif [pyramid]
+  G offset (x, y): (-1, 33)
+  R offset (x, y): (-4, 115)
+v_malorossii.tif [pyramid]
+  G offset (x, y): (3, 26)
+  R offset (x, y): (4, 120)
+makhrovye_maki.tif [pyramid]
+  G offset (x, y): (8, 9)
+  R offset (x, y): (14, 61)
+emir.tif [edges]
+  G offset (x, y): (24, 49)
+  R offset (x, y): (40, 107)
