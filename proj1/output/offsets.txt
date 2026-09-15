@@ -1,0 +1,42 @@
+cathedral.jpg
+  G offset (x, y): (2, 5)
+  R offset (x, y): (3, 12)
+monastery.jpg
+  G offset (x, y): (2, -3)
+  R offset (x, y): (2, 3)
+tobolsk.jpg
+  G offset (x, y): (3, 3)
+  R offset (x, y): (3, 7)
+church.tif
+  G offset (x, y): (4, 25)
+  R offset (x, y): (-4, 58)
+emir.tif
+  G offset (x, y): (24, 49)
+  R offset (x, y): (43, 61)
+harvesters.tif
+  G offset (x, y): (17, 59)
+  R offset (x, y): (14, 123)
+icon.tif
+  G offset (x, y): (17, 41)
+  R offset (x, y): (23, 89)
+ilemselga.tif
+  G offset (x, y): (7, 40)
+  R offset (x, y): (11, 131)
+melons.tif
+  G offset (x, y): (10, 81)
+  R offset (x, y): (14, 178)
+religous_painting.tif
+  G offset (x, y): (3, 29)
+  R offset (x, y): (7, 69)
+self_portrait.tif
+  G offset (x, y): (29, 78)
+  R offset (x, y): (37, 176)
+siren.tif
+  G offset (x, y): (-5, 50)
+  R offset (x, y): (-24, 97)
+three_generations.tif
+  G offset (x, y): (14, 52)
+  R offset (x, y): (12, 111)
+wharf.tif
+  G offset (x, y): (-7, 15)
+  R offset (x, y): (-16, 82)
