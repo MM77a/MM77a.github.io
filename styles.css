@@ -119,3 +119,33 @@ figcaption {
         width: 100%;
     }
 }
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px 24px;
+}
+
+.result-grid figcaption {
+    line-height: 1.4;
+}
+
+section > p {
+    max-width: 780px;
+}
+
+section > p + p {
+    margin-top: 16px;
+}
+
+@media (max-width: 840px) {
+    .result-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Project #1</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+<main>
+    <a class="back-link" href="../index.html">← Back to all projects</a>
+
+    <header>
+        <h1>Programming Project #1</h1>
+        <h2>Images of the Russian Empire</h2>
+    </header>
+
+    <section>
+        <h3>Overview</h3>
+        <p>
+            Sergei Prokudin-Gorskii recorded scenes through blue, green, and
+            red filters, producing three vertically stacked grayscale
+            exposures. My goal was to separate these channels and automatically
+            align them into a single RGB image.
+        </p>
+
+        <div class="image-grid">
+            <figure>
+                <img src="./output/cathedral_unaligned.jpg"
+                     alt="Cathedral before channel alignment">
+                <figcaption>Before alignment</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/cathedral_single_scale.jpg"
+                     alt="Cathedral after channel alignment">
+                <figcaption>After alignment</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section>
+        <h3>Approach</h3>
+
+        <p>
+            I first divided each glass-plate scan into three equal sections in
+            B, G, R order. I kept blue fixed and aligned green and red to it.
+        </p>
+
+        <p>
+            For each candidate displacement, I used mean squared pixel
+            difference as the L2 matching score. Because the plate borders are
+            visually strong but unrelated to the scene, I evaluated the score
+            only on the central 60% of each channel.
+        </p>
+
+        <p>
+            For small JPEGs, I exhaustively searched displacements from
+            −15 to +15 pixels in both directions. For high-resolution TIFFs,
+            I recursively downsampled the channels by a factor of two until
+            the largest dimension was at most 250 pixels. I aligned the
+            coarsest level, doubled its displacement at each finer level, and
+            refined within a ±3-pixel neighborhood.
+        </p>
+
+        <p>
+            Offsets below are listed as <strong>(x, y)</strong>. Positive x
+            moves right and positive y moves down.
+        </p>
+    </section>
+
+    <section>
+        <h3>Single-Scale Alignment</h3>
+
+        <div class="result-grid">
+            <figure>
+                <img src="./output/cathedral_single_scale.jpg"
+                     alt="Aligned cathedral">
+                <figcaption>
+                    Cathedral<br>
+                    G (2, 5) · R (3, 12)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/monastery_single_scale.jpg"
+                     alt="Aligned monastery">
+                <figcaption>
+                    Monastery<br>
+                    G (2, −3) · R (2, 3)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/tobolsk_single_scale.jpg"
+                     alt="Aligned Tobolsk">
+                <figcaption>
+                    Tobolsk<br>
+                    G (3, 3) · R (3, 7)
+                </figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section>
+        <h3>Multi-Scale Pyramid Alignment</h3>
+
+        <div class="result-grid">
+            <figure>
+                <img src="./output/cathedral_pyramid.jpg" alt="Cathedral">
+                <figcaption>Cathedral<br>G (2, 5) · R (3, 12)</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/monastery_pyramid.jpg" alt="Monastery">
+                <figcaption>Monastery<br>G (2, −3) · R (2, 3)</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/tobolsk_pyramid.jpg" alt="Tobolsk">
+                <figcaption>Tobolsk<br>G (3, 3) · R (3, 7)</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/church_pyramid.jpg" alt="Church">
+                <figcaption>Church<br>G (4, 25) · R (−4, 58)</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/emir_edges.jpg" alt="Emir">
+                <figcaption>
+                    Emir — edge features<br>
+                    G (24, 49) · R (40, 107)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/harvesters_pyramid.jpg" alt="Harvesters">
+                <figcaption>
+                    Harvesters<br>
+                    G (17, 59) · R (14, 123)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/icon_pyramid.jpg" alt="Icon">
+                <figcaption>Icon<br>G (17, 41) · R (23, 89)</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/ilemselga_pyramid.jpg" alt="Ilemselga">
+                <figcaption>Ilemselga<br>G (7, 40) · R (11, 131)</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/melons_pyramid.jpg" alt="Melons">
+                <figcaption>Melons<br>G (10, 81) · R (14, 178)</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/religous_painting_pyramid.jpg"
+                     alt="Religious painting">
+                <figcaption>
+                    Religious Painting<br>
+                    G (3, 29) · R (7, 69)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/self_portrait_pyramid.jpg"
+                     alt="Self portrait">
+                <figcaption>
+                    Self Portrait<br>
+                    G (29, 78) · R (37, 176)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/siren_pyramid.jpg" alt="Siren">
+                <figcaption>Siren<br>G (−5, 50) · R (−24, 97)</figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/three_generations_pyramid.jpg"
+                     alt="Three generations">
+                <figcaption>
+                    Three Generations<br>
+                    G (14, 52) · R (12, 111)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/wharf_pyramid.jpg" alt="Wharf">
+                <figcaption>Wharf<br>G (−7, 15) · R (−16, 82)</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section>
+        <h3>Better Features: Fixing Emir</h3>
+
+        <p>
+            Raw-pixel L2 matching struggled on Emir because the blue, green,
+            and red exposures represent his vividly colored robe with very
+            different intensities. Similar scene content therefore did not
+            necessarily have similar grayscale values.
+        </p>
+
+        <p>
+            I computed horizontal and vertical Sobel derivatives and aligned
+            the gradient magnitudes instead. Edges describe shared structure
+            such as the face, robe, and doorway while being less dependent on
+            channel brightness. The resulting offsets were then applied to the
+            original channels.
+        </p>
+
+        <div class="image-grid">
+            <figure>
+                <img src="./output/emir_pyramid.jpg"
+                     alt="Emir aligned using raw pixels">
+                <figcaption>
+                    Raw-pixel L2<br>
+                    G (24, 49) · R (43, 61)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/emir_edges.jpg"
+                     alt="Emir aligned using Sobel edge features">
+                <figcaption>
+                    Sobel edge features<br>
+                    G (24, 49) · R (40, 107)
+                </figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section>
+        <h3>Additional Images from the Library of Congress</h3>
+
+        <div class="result-grid">
+            <figure>
+                <img src="./output/sorochei_dam_pyramid.jpg"
+                     alt="Railway dam at Sorochei Gubie">
+                <figcaption>
+                    <a href="https://www.loc.gov/item/2018679263/">
+                        Zh.d. damba v Sorocheĭ Gubi︠e︡
+                    </a><br>
+                    G (−1, 33) · R (−4, 115)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/v_malorossii_pyramid.jpg"
+                     alt="V Malorossii">
+                <figcaption>
+                    <a href="https://www.loc.gov/item/2018679031/">
+                        V Malorossīi
+                    </a><br>
+                    G (3, 26) · R (4, 120)
+                </figcaption>
+            </figure>
+
+            <figure>
+                <img src="./output/makhrovye_maki_pyramid.jpg"
+                     alt="Makhrovye maki">
+                <figcaption>
+                    <a href="https://www.loc.gov/item/2018679112/">
+                        Makhrovye maki
+                    </a><br>
+                    G (8, 9) · R (14, 61)
+                </figcaption>
+            </figure>
+        </div>
+    </section>
+</main>
+</body>
+</html>
