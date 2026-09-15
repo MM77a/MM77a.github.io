@@ -103,7 +103,13 @@ def pyramid_align(source, reference):
 
     return aligned, (final_dx, final_dy)
 
-def process_image(filename):
+def edge_features(image):
+    grad_x = cv.Sobel(image, cv.CV_32F, 1, 0, ksize=3)
+    grad_y = cv.Sobel(image, cv.CV_32F, 0, 1, ksize=3)
+
+    return cv.magnitude(grad_x, grad_y)
+
+def process_image(filename, use_edges=False):
     image_path = DATA_DIR / filename
 
     # IMREAD_UNCHANGED preserves 16-bit TIFF data for later
@@ -122,15 +128,39 @@ def process_image(filename):
     g = im[height:2 * height, :]
     r = im[2 * height:3 * height, :]
 
-    ag, g_offset = pyramid_align(g, b)
-    ar, r_offset = pyramid_align(r, b)
+    if use_edges:
+        b_features = edge_features(b)
+        g_features = edge_features(g)
+        r_features = edge_features(r)
+
+        _, g_offset = pyramid_align(g_features, b_features)
+        _, r_offset = pyramid_align(r_features, b_features)
+
+        # Apply feature-computed offsets to the original channels
+        ag = np.roll(
+            g,
+            shift=(g_offset[1], g_offset[0]),
+            axis=(0, 1)
+        )
+        ar = np.roll(
+            r,
+            shift=(r_offset[1], r_offset[0]),
+            axis=(0, 1)
+        )
+
+        suffix = "edges"
+        
+    else:
+        ag, g_offset = pyramid_align(g, b)
+        ar, r_offset = pyramid_align(r, b)
+        suffix = "pyramid"
 
     im_out = np.dstack([ar, ag, b])
 
     out_uint8 = np.clip(im_out * 255, 0, 255).astype(np.uint8)
     out_bgr = cv.cvtColor(out_uint8, cv.COLOR_RGB2BGR)
 
-    output_path = OUTPUT_DIR / f"{Path(filename).stem}_pyramid.jpg"
+    output_path = OUTPUT_DIR / f"{Path(filename).stem}_{suffix}.jpg"
     cv.imwrite(str(output_path), out_bgr)
 
     print(f"{filename}")
@@ -138,22 +168,4 @@ def process_image(filename):
     print(f"  R offset (x, y): {r_offset}")
 
 if __name__ == "__main__":
-    files = [
-        "cathedral.jpg",
-        "monastery.jpg",
-        "tobolsk.jpg",
-        "church.tif",
-        "emir.tif",
-        "harvesters.tif",
-        "icon.tif",
-        "ilemselga.tif",
-        "melons.tif",
-        "religous_painting.tif",
-        "self_portrait.tif",
-        "siren.tif",
-        "three_generations.tif",
-        "wharf.tif",
-    ]
-
-    for filename in files:
-        process_image(filename)
+    process_image("emir.tif", use_edges=True)
