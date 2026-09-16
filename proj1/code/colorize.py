@@ -10,36 +10,52 @@ OUTPUT_DIR = PROJECT_DIR / "output"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 
-def align(source, reference, max_shift=15):
+def align(source, reference, max_shift=15, crop_ratio=0.2):
+    """
+    Align source to reference with exhaustive L2 search.
+
+    Returns the aligned source and its displacement as (x, y).
+    """
     height, width = source.shape
 
-    border_y = max(max_shift + 1, int(height * 0.2))
-    border_x = max(max_shift + 1, int(width * 0.2))
+    # Exclude strong plate borders so they do not dominate the score.
+    border_y = max(max_shift + 1, int(height * crop_ratio))
+    border_x = max(max_shift + 1, int(width * crop_ratio))
+
+    reference_center = reference[
+        border_y:-border_y,
+        border_x:-border_x
+    ]
 
     best_score = np.inf
     best_dx = 0
     best_dy = 0
 
+    # Test every translation in the specified search window.
     for dy in range(-max_shift, max_shift + 1):
         for dx in range(-max_shift, max_shift + 1):
-            shifted = np.roll(source, shift=(dy, dx), axis=(0, 1))
+            shifted = np.roll(
+                source,
+                shift=(dy, dx),
+                axis=(0, 1)
+            )
 
             shifted_center = shifted[
                 border_y:-border_y,
                 border_x:-border_x
             ]
-            reference_center = reference[
-                border_y:-border_y,
-                border_x:-border_x
-            ]
 
-            score = np.mean((shifted_center - reference_center) ** 2)
+            # MSE has the same minimizer as squared L2 distance.
+            score = np.mean(
+                (shifted_center - reference_center) ** 2
+            )
 
             if score < best_score:
                 best_score = score
                 best_dx = dx
                 best_dy = dy
 
+    # Apply the best displacement to the full-resolution channel.
     aligned = np.roll(
         source,
         shift=(best_dy, best_dx),
@@ -48,12 +64,31 @@ def align(source, reference, max_shift=15):
 
     return aligned, (best_dx, best_dy)
 
-def pyramid_align(source, reference):
-    # Coarsest level
-    if max(source.shape) <= 250:
-        return align(source, reference, max_shift=15)
+def pyramid_align(
+    source,
+    reference,
+    coarse_size=250,
+    coarse_radius=15,
+    refine_radius=3,
+    crop_ratio=0.2
+):
+    """
+    Align images with a recursive coarse-to-fine pyramid.
 
-    # Downsample by a factor of 2
+    The displacement is estimated at the smallest scale, doubled at
+    each finer scale, and locally refined.
+    """
+
+    # At the coarsest level, a full search is computationally affordable.
+    if max(source.shape) <= coarse_size:
+        return align(
+            source,
+            reference,
+            max_shift=coarse_radius,
+            crop_ratio=crop_ratio
+        )
+
+    # Construct the next pyramid level by downsampling both channels.
     source_small = cv.resize(
         source,
         None,
@@ -69,13 +104,17 @@ def pyramid_align(source, reference):
         interpolation=cv.INTER_AREA
     )
 
-    # Estimate displacement at the smaller level
+    # Recursively estimate displacement at the coarser scale.
     _, (small_dx, small_dy) = pyramid_align(
         source_small,
-        reference_small
+        reference_small,
+        coarse_size=coarse_size,
+        coarse_radius=coarse_radius,
+        refine_radius=refine_radius,
+        crop_ratio=crop_ratio
     )
 
-    # Scale displacement back to the current level
+    # Convert the coarse displacement to the current resolution.
     estimated_dx = small_dx * 2
     estimated_dy = small_dy * 2
 
@@ -85,11 +124,12 @@ def pyramid_align(source, reference):
         axis=(0, 1)
     )
 
-    # Search only a small neighborhood around the estimate
+    # Refine only near the coarse estimate instead of searching globally.
     _, (correction_dx, correction_dy) = align(
         source_shifted,
         reference,
-        max_shift=3
+        max_shift=refine_radius,
+        crop_ratio=crop_ratio
     )
 
     final_dx = estimated_dx + correction_dx
@@ -104,12 +144,16 @@ def pyramid_align(source, reference):
     return aligned, (final_dx, final_dy)
 
 def edge_features(image):
+    """Compute Sobel gradient magnitude for feature-based alignment."""
     grad_x = cv.Sobel(image, cv.CV_32F, 1, 0, ksize=3)
     grad_y = cv.Sobel(image, cv.CV_32F, 0, 1, ksize=3)
 
     return cv.magnitude(grad_x, grad_y)
 
 def process_image(filename, mode="pyramid"):
+    """Load, align, colorize, and save one stacked glass-plate image."""
+
+    # Load without downcasting 16-bit TIFFs, then normalize to [0, 1].
     image_path = DATA_DIR / filename
     im = cv.imread(str(image_path), cv.IMREAD_UNCHANGED)
 
@@ -119,12 +163,14 @@ def process_image(filename, mode="pyramid"):
     max_value = np.iinfo(im.dtype).max
     im = im.astype(np.float32) / max_value
 
+    # Split the vertically stacked plate in its original B, G, R order.
     height = im.shape[0] // 3
 
     b = im[:height, :]
     g = im[height:2 * height, :]
     r = im[2 * height:3 * height, :]
 
+    # Align the green and red channels to the fixed blue reference.
     if mode == "single_scale":
         ag, g_offset = align(g, b)
         ar, r_offset = align(r, b)
@@ -134,6 +180,8 @@ def process_image(filename, mode="pyramid"):
         ar, r_offset = pyramid_align(r, b)
 
     elif mode == "edges":
+        # Estimate offsets from Sobel features, then apply them to the
+        # original intensity channels to preserve the final colors.
         b_features = edge_features(b)
         g_features = edge_features(g)
         r_features = edge_features(r)
@@ -157,8 +205,10 @@ def process_image(filename, mode="pyramid"):
             "Mode must be 'single_scale', 'pyramid', or 'edges'"
         )
 
+    # Stack in RGB order for viewing.
     im_out = np.dstack([ar, ag, b])
 
+    # OpenCV writes images in BGR order, so convert before saving.
     out_uint8 = np.clip(im_out * 255, 0, 255).astype(np.uint8)
     out_bgr = cv.cvtColor(out_uint8, cv.COLOR_RGB2BGR)
 
@@ -167,6 +217,7 @@ def process_image(filename, mode="pyramid"):
     if not cv.imwrite(str(output_path), out_bgr):
         raise IOError(f"Could not save {output_path}")
 
+    # Report displacements in the project-required (x, y) convention.
     print(f"{filename} [{mode}]")
     print(f"  G offset (x, y): {g_offset}")
     print(f"  R offset (x, y): {r_offset}")
