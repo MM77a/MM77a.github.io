@@ -49,11 +49,20 @@
         </p>
 
         <p>
-            For each candidate displacement, I used mean squared pixel
-            difference as the L2 matching score. Because the plate borders are
-            visually strong but unrelated to the scene, I evaluated the score
-            only on the central 60% of each channel.
+            For each candidate displacement (dx, dy), I computed the mean
+            squared difference between the shifted source channel and the
+            reference:
+            <code>MSE = (1/N) Σ(I<sub>shifted</sub> − I<sub>reference</sub>)²</code>.
+            Since every candidate compares the same number of pixels,
+            minimizing MSE produces the same displacement as minimizing the
+            squared L2 distance.
         </p>
+
+        <p>
+            The plate borders are visually strong but unrelated to the scene,
+            so I evaluated this score only on the central 60% of each channel.
+        </p>
+
 
         <p>
             For small JPEGs, I exhaustively searched displacements from
@@ -69,21 +78,6 @@
             moves right and positive y moves down.
         </p>
 
-        <p>
-            For a candidate displacement (dx, dy), I computed
-            the mean squared difference between the shifted source channel
-            and the reference channel:
-            MSE = (1/N) Σ(I<sub>shifted</sub> − I<sub>reference</sub>)².
-            Because every candidate uses the same number of pixels, minimizing
-            this score gives the same displacement as minimizing the L2 norm.
-        </p>
-
-        <p>
-            I used one fixed parameter set for every image: a 20% scoring crop,
-            a ±15-pixel search at the coarsest level, and a ±3-pixel refinement
-            at each finer level. I did not tune parameters separately for
-            individual images.
-        </p>
     </section>
 
     <section>
@@ -121,13 +115,7 @@
 
     <section>
         <h3>Multi-Scale Pyramid Alignment</h3>
-        
-        <p>
-            Raw-pixel L2 aligned 16 of the 17 images correctly. Emir was the 
-            only failure under the basic metric, which I corrected using Sobel
-            edge features in the following section.
-        </p>
-        
+
         <div class="result-grid">
             <figure>
                 <img src="./output/cathedral_pyramid.jpg" alt="Cathedral">
