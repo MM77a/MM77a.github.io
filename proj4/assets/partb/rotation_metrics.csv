@@ -1,0 +1,9 @@
+angle,method,total_matches,correct_matches
+0,Baseline,300,300
+0,Oriented,300,300
+30,Baseline,1,0
+30,Oriented,223,220
+60,Baseline,1,0
+60,Oriented,221,218
+90,Baseline,5,0
+90,Oriented,296,296
