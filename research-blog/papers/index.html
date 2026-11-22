@@ -1,1 +1,17 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Spring Mao's paper reading index."><title>Paper Reading · Research Blog</title><link rel="stylesheet" href="../../site.css"></head><body><main><nav><a href="../">← Research Blog</a><a href="/">Home</a></nav><div class="eyebrow">Reading notebook</div><h1>Paper Reading</h1><p class="intro">This section will host my paper reading notes. I focus on the research question, methodology, evidence, limitations, and what I still do not understand.</p><article class="entry"><div class="meta">Current focus · Reading in progress</div><h2>Pixel-space Diffusion &amp; Representation Learning</h2><p>Exploring the relationship between model architecture, efficient pixel-space generation, and representation alignment, including AceiT and REPA. Detailed reading notes will be published here as they are checked and refined.</p></article><article class="entry"><div class="meta">How I read papers</div><h2>WHY · HOW · WHAT · Evidence</h2><p>I distinguish authors' reported results, their interpretations, and my own hypotheses. A missing citation or experiment is a question to check, not proof of a research gap.</p></article><footer><a href="../">Back to Research Blog</a></footer></main></body></html>
+---
+layout: null
+---
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Spring Mao's paper reading index."><title>Paper Reading · Research Blog</title><link rel="stylesheet" href="../../site.css"></head><body><main><nav><a href="../">← Research Blog</a><a href="/">Home</a></nav><div class="eyebrow">Reading notebook</div><h1>Paper Reading</h1><p class="intro">This section will host my paper reading notes. I focus on the research question, methodology, evidence, limitations, and what I still do not understand.</p>{% assign notes = site.pages | where_exp: "p", "p.path contains 'research-blog/papers/'" | where_exp: "p", "p.path contains '.md'" | sort: "title" %}
+{% if notes.size > 0 %}
+<p class="meta">{{ notes.size }} reading note{% if notes.size != 1 %}s{% endif %} · Automatically listed from Markdown files in this folder</p>
+{% for note in notes %}
+<article class="entry">
+<div class="meta">{% if note.date %}{{ note.date | date: "%Y-%m-%d" }}{% else %}Paper reading{% endif %}</div>
+<h2><a href="{{ note.url | relative_url }}">{{ note.title | default: note.basename | replace: '-', ' ' | replace: '_', ' ' | escape }}</a></h2>
+{% if note.description %}<p>{{ note.description | escape }}</p>{% elsif note.excerpt %}<p>{{ note.excerpt | strip_html | strip_newlines | truncate: 180 }}</p>{% endif %}
+</article>
+{% endfor %}
+{% else %}
+<article class="entry"><h2>No published paper notes yet</h2><p>Add a <code>.md</code> file in <code>research-blog/papers/</code>. This page will automatically display its link after GitHub Pages builds the site.</p></article>
+{% endif %}
+<footer><a href="../">Back to Research Blog</a></footer></main></body></html>

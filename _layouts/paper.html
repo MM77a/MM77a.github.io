@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ page.description | default: page.title | default: 'Research paper reading notes' | escape }}">
+  <title>{{ page.title | default: page.basename | replace: '-', ' ' | escape }} · Research Blog</title>
+  <link rel="stylesheet" href="{{ '/site.css' | relative_url }}">
+  <style>article.note{background:#fff;border:1px solid #e2e7eb;border-radius:12px;padding:26px 32px;overflow-wrap:break-word}article.note h1,article.note h2,article.note h3{font-family:system-ui,sans-serif;letter-spacing:normal;line-height:1.35;margin-top:1.4em}article.note h1{font-size:2rem;margin-top:0}article.note h2{font-size:1.5rem}article.note h3{font-size:1.15rem}article.note p,article.note li{font-size:16px}article.note img{max-width:100%;height:auto}article.note pre{overflow-x:auto;padding:18px;background:#f3f6f8;border-radius:8px}article.note code{overflow-wrap:anywhere}article.note pre code{overflow-wrap:normal}article.note blockquote{border-left:3px solid #a8bfcd;margin:1.4em 0;padding-left:18px;color:#546777}article.note table{display:block;overflow-x:auto;border-collapse:collapse;width:100%}article.note td,article.note th{border:1px solid #dce5ea;padding:8px 10px}article.note hr{border:0;border-top:1px solid #dce5ea;margin:30px 0}article.note a{overflow-wrap:anywhere}@media(max-width:620px){article.note{padding:20px 17px}}</style>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body><main>
+<nav><a href="/research-blog/papers/">← Paper Reading</a><a href="/research-blog/">Research Blog</a><a href="/">Home</a></nav>
+<div class="eyebrow">Research · Paper Reading</div>
+<article class="note">{{ content }}</article>
+<footer>Learning notes and interpretations; please consult original papers for authoritative results.</footer>
+</main></body>
+</html>

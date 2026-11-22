@@ -1,0 +1,16 @@
+title: "Spring Mao · Research Blog"
+url: "https://mm77a.github.io"
+baseurl: ""
+markdown: kramdown
+kramdown:
+  input: GFM
+  math_engine: mathjax
+defaults:
+  - scope:
+      path: "research-blog/papers"
+      type: pages
+    values:
+      layout: paper
+      permalink: "/research-blog/papers/:basename/"
+plugins:
+  - jekyll-optional-front-matter
