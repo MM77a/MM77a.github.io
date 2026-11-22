@@ -7,7 +7,7 @@ layout: null
 {% for note in notes %}
 <article class="entry">
 <div class="meta">{% if note.date %}{{ note.date | date: "%Y-%m-%d" }}{% else %}Paper reading{% endif %}</div>
-<h2><a href="{{ note.url | relative_url }}">{{ note.title | default: note.basename | replace: '-', ' ' | replace: '_', ' ' | escape }}</a></h2>
+<h2><a href="{{ note.url | relative_url }}">{{ note.title | default: note.name | remove: '.md' | replace: '-', ' ' | replace: '_', ' ' | escape }}</a></h2>
 {% if note.description %}<p>{{ note.description | escape }}</p>{% elsif note.excerpt %}<p>{{ note.excerpt | strip_html | strip_newlines | truncate: 180 }}</p>{% endif %}
 </article>
 {% endfor %}

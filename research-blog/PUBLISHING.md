@@ -1,10 +1,10 @@
 # Publishing Paper Notes
 
-Upload any Markdown file (`.md`) into this `research-blog/papers/` directory. **Do not edit `index.html`.** The index automatically lists all Markdown files in this directory, and GitHub Pages (Jekyll) creates a readable web page for each one.
+Upload any Markdown file (`.md`) into the `research-blog/papers/` directory. **Do not edit `index.html`.** The index automatically lists all Markdown files in this directory, and GitHub Pages (Jekyll) creates a readable web page for each one.
 
 For example, upload `repa.md` and the generated article link will be:
 
-https://mm77a.github.io/research-blog/papers/repa/
+https://mm77a.github.io/research-blog/papers/repa.html
 
 The article will also appear on https://mm77a.github.io/research-blog/papers/ after GitHub Pages finishes building.
 

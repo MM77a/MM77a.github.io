@@ -7,10 +7,9 @@ kramdown:
   math_engine: mathjax
 defaults:
   - scope:
-      path: "research-blog/papers"
+      path: "research-blog/papers/*.md"
       type: pages
     values:
       layout: paper
-      permalink: "/research-blog/papers/:basename/"
 plugins:
   - jekyll-optional-front-matter
